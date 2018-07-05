@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:命名空间，对应dao接口 -->
+<mapper namespace="com.smmot.suamo.dao.PriceDao">
+
+    <!--查询全部信息-->
+    <select id="selectList" resultType="com.smmot.suamo.entity.Price">
+        SELECT price_id,hotel_id,room_type_id,room_price,begin_time,end_time,create_title,delstatus
+        FROM tb_price
+        WHERE 1=1
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+        <if test="roomPrice!=null">AND room_price=#{roomPrice}</if>
+        <if test="beginTime!=null">AND begin_time=#{beginTime}</if>
+        <if test="endTime!=null">AND end_time=#{endTime}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+        <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+        ORDER BY delstatus
+--         DESC
+    </select>
+
+    <!--根据信息查询价格-->
+    <select id="selectOne" resultType="com.smmot.suamo.entity.Price" parameterType="com.smmot.suamo.entity.Price">
+        SELECT p.*,h.hotel_name,rt.type_name
+        FROM tb_price AS p
+        LEFT  JOIN tb_hotel AS h  ON p.price_id=h.hotel_id
+        LEFT  JOIN tb_roomtype AS rt ON p.price_id=rt.room_type_id
+        WHERE
+        <if test="priceId!=null">AND price_id=#{priceId}</if>
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+        <if test="roomPrice!=null">AND room_price=#{roomPrice}</if>
+        <if test="beginTime!=null">AND begin_time=#{beginTime}</if>
+        <if test="endTime!=null">AND end_time=#{endTime}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+        <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+    </select>
+
+    <!--添加价格信息-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="priceId" keyColumn="price_id"
+            parameterType="com.smmot.suamo.entity.Price">
+        INSERT INTO
+        tb_price(hotel_id,room_type_id,room_price,begin_time,end_time,create_title)
+        VALUES
+        (#{hotelId},#{roomTypeId},#{roomPrice},#{beginTime},#{endTime},#{createTitle})
+    </insert>
+
+    <!--修改价格信息-->
+    <update id="update" parameterType="com.smmot.suamo.entity.Price">
+      UPDATE  tb_price
+        <set>
+            <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+            <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+            <if test="roomPrice!=null">AND room_price=#{roomPrice}</if>
+            <if test="beginTime!=null">AND begin_time=#{beginTime}</if>
+            <if test="endTime!=null">AND end_time=#{endTime}</if>
+            <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+            <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+        </set>
+          WHERE price_id=#{priceId}
+    </update>
+
+    <!--逻辑删除，将状态【delstatus】设置为2-->
+    <update id="delete" parameterType="com.smmot.suamo.entity.Price">
+        UPDATE  tb_price
+        <set>
+            <if test="delstatus!=null and delstatus!=''">delstatus='2'</if>
+        </set>
+        WHERE 1=1
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+        <if test="roomPrice!=null">AND room_price=#{roomPrice}</if>
+        <if test="beginTime!=null">AND begin_time=#{beginTime}</if>
+        <if test="endTime!=null">AND end_time=#{endTime}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+    </update>
+
+    <!--更具信息查询酒店全部的房型价格信息-->
+    <select id="selectListALLMsg" resultType="com.smmot.suamo.entity.Price">
+        SELECT p.`*`,rt.type_name AS roomType,pir.pirture_path AS pirturePath
+        FROM tb_price p
+        LEFT JOIN tb_pirture AS pir ON pir.hotel_id = p.hotel_id AND pir.room_type_id = p.room_type_id
+        LEFT JOIN tb_roomtype AS rt ON rt.room_type_id = pir.room_type_id
+        WHERE 1=1
+        <if test="hotelId!=null">AND p.hotel_id=#{hotelId}</if>
+        <if test="roomTypeId!=null">AND p.room_type_id=#{roomTypeId}</if>
+        <if test="roomPrice!=null">AND p.room_price=#{roomPrice}</if>
+        <if test="beginTime!=null">AND p.begin_time=#{beginTime}</if>
+        <if test="endTime!=null">AND p.end_time=#{endTime}</if>
+        <if test="createTitle!=null">AND p.create_title=#{createTitle}</if>
+        ORDER BY  p.delstatus AND p.room_price
+    </select>
+
+    <!--更具信息查询酒店全部的房型价格信息-->
+    <select id="selectOneByPriceId" resultType="com.smmot.suamo.entity.Price">
+       SELECT h.hotel_name AS photel_name,rt.type_name AS room_type_name,p.room_price AS room_price
+       FROM tb_price p ,tb_hotel h,tb_roomtype rt
+       WHERE p.price_id =#{priceId} AND p.hotel_id = h.hotel_id AND p.room_type_id = rt.room_type_id
+    </select>
+</mapper>

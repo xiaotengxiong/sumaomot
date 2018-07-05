@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:命名空间，对应dao接口 -->
+<mapper namespace="com.smmot.suamo.dao.PirtureDao">
+
+    <!--查询全部图片信息-->
+    <select id="selectList" resultType="com.smmot.suamo.entity.Pirture">
+        SELECT pirture_id,hotel_id,room_type_id,pirture_path,prioritys,create_title,delstatus,create_time,update_time
+        FROM tb_pirture
+        WHERE 1=1
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+        <if test="pirturePath!=null">AND pirture_path=#{pirturePath}</if>
+        <if test="prioritys!=null">AND prioritys=#{prioritys}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+        <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+        ORDER BY delstatus AND prioritys
+        --         DESC
+    </select>
+
+    <!--根据信息查询图片信息-->
+    <select id="selectOne" resultType="com.smmot.suamo.entity.Pirture">
+        SELECT pirture_id,hotel_id,room_type_id,pirture_path,prioritys,create_title,delstatus,create_time,update_time
+        FROM tb_pirture
+        WHERE 1=1
+        <if test="pirtureId!=null">AND pirture_id=#{pirtureId}</if>
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+        <if test="pirturePath!=null">AND pirture_path=#{pirturePath}</if>
+        <if test="prioritys!=null">AND prioritys=#{prioritys}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+        <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+    </select>
+
+    <!--添加图片信息-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="pirtureId" keyColumn="pirture_id"
+            parameterType="com.smmot.suamo.entity.Pirture">
+        INSERT INTO
+        tb_pirture(pirture_id,hotel_id,room_type_id,pirture_path,prioritys,create_title,delstatus)
+        VALUES
+        (#{pirtureId},#{hotelId},#{roomTypeId},#{pirturePath},#{prioritys},#{createTitle},#{delstatus})
+    </insert>
+
+    <!--修改图片信息-->
+    <update id="update" parameterType="com.smmot.suamo.entity.Pirture">
+      UPDATE  tb_pirture
+        <set>
+            <if test="pirtureId!=null">AND pirture_id=#{pirtureId}</if>
+            <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+            <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+            <if test="pirturePath!=null">AND pirture_path=#{pirturePath}</if>
+            <if test="prioritys!=null">AND prioritys=#{prioritys}</if>
+            <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+            <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+        </set>
+          WHERE pirture_id=#{pirtureId}
+    </update>
+
+    <!--逻辑删除，将状态【delstatus】设置为2-->
+    <update id="delete" parameterType="com.smmot.suamo.entity.Pirture">
+        UPDATE  tb_hotel
+        <set>
+            <if test="delstatus!=null and delstatus!=''">delstatus='2'</if>
+        </set>
+        WHERE 1=1
+        <if test="pirtureId!=null">AND pirture_id=#{pirtureId}</if>
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+        <if test="pirturePath!=null">AND pirture_path=#{pirturePath}</if>
+        <if test="prioritys!=null">AND prioritys=#{prioritys}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+    </update>
+</mapper>

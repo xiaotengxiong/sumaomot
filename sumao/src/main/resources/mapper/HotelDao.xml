@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:命名空间，对应dao接口 -->
+<mapper namespace="com.smmot.suamo.dao.HotelDao">
+
+
+
+
+
+
+
+
+    <!--添加酒店信息-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="hotelId"
+            keyColumn="hotel_id" parameterType="com.smmot.suamo.entity.Hotel">
+        INSERT INTO
+        tb_hotel (hotel_name,hotel_intro,provice,city,district,specific_location,service_phone,price_path,create_title)
+        VALUES
+        (#{hotelName},#{hotelIntro},#{provice},#{city},#{district},#{specificLocation},#{servicePhone},#{pricePath},#{createTitle})
+    </insert>
+
+
+    <!--逻辑删除，将状态【delstatus】设置为2-->
+    <update id="logicalDeletion">
+        UPDATE  tb_hotel
+        <set>
+            delstatus=2
+        </set>
+        WHERE  1=1
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="hotelName!=null">AND hotel_name=#{hotelName}</if>
+        <if test="hotelIntro!=null">AND hotel_intro=#{hotelIntro}</if>
+        <if test="provice!=null">AND provice=#{provice}</if>
+        <if test="city!=null">AND city=#{city}</if>
+        <if test="district!=null">AND district=#{district}</if>
+        <if test="specificLocation!=null">AND specific_location=#{specificLocation}</if>
+        <if test="servicePhone!=null">AND service_phone=#{servicePhone}</if>
+        <if test="pricePath!=null">price_path=#{pricePath},</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+    </update>
+
+    <!--修改酒店信息-->
+    <update id="update" parameterType="com.smmot.suamo.entity.Hotel">
+        UPDATE  tb_hotel
+        <set>
+            <if test="hotelName!=null">hotel_name=#{hotelName},</if>
+            <if test="hotelIntro!=null">hotel_intro=#{hotelIntro},</if>
+            <if test="provice!=null">provice=#{provice},</if>
+            <if test="city!=null">city=#{city},</if>
+            <if test="district!=null">district=#{district},</if>
+            <if test="specificLocation!=null">specific_location=#{specificLocation},</if>
+            <if test="servicePhone!=null">service_phone=#{servicePhone},</if>
+            <if test="pricePath!=null">price_path=#{pricePath},</if>
+            <if test="createTitle!=null">create_title=#{createTitle},</if>
+            <if test="delstatus!=null">delstatus=#{delstatus}</if>
+        </set>
+        WHERE hotel_id=#{hotelId}
+    </update>
+
+
+
+
+
+    <!--根据信息查所有酒店信息-->
+    <select id="selectList" resultType="com.smmot.suamo.entity.Hotel">
+        SELECT h.*
+        FROM tb_hotel h
+        WHERE 1=1
+        <if test="hotelId!=null">AND h.hotel_id = #{hotelId}</if>
+        <if test="hotelName!=null">AND hotel_name=#{hotelName}</if>
+        <if test="hotelIntro!=null">AND hotel_intro=#{hotelIntro}</if>
+        <if test="provice!=null">AND provice=#{provice}</if>
+        <if test="city!=null">AND city=#{city}</if>
+        <if test="district!=null">AND district=#{district}</if>
+        <if test="specificLocation!=null">AND specific_location=#{specificLocation}</if>
+        <if test="servicePhone!=null">AND service_phone=#{servicePhone}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+        <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+        ORDER BY delstatus
+--         DESC
+    </select>
+
+    <!--根据信息查询单个酒店-->
+    <select id="selectOne" resultType="com.smmot.suamo.entity.Hotel">
+        SELECT h.*
+        FROM tb_hotel h
+        WHERE 1=1
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="hotelName!=null">AND hotel_name=#{hotelName}</if>
+        <if test="hotelIntro!=null">AND hotel_intro=#{hotelIntro}</if>
+        <if test="provice!=null">AND provice=#{provice}</if>
+        <if test="city!=null">AND city=#{city}</if>
+        <if test="district!=null">AND district=#{district}</if>
+        <if test="specificLocation!=null">AND specific_location=#{specificLocation}</if>
+        <if test="servicePhone!=null">AND service_phone=#{servicePhone}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+        <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+    </select>
+
+
+    <!--查所有酒店信息和酒店最低价格-->
+    <select id="selectListAndMinPrice" resultType="com.smmot.suamo.entity.Hotel">
+      SELECT
+      a.hotel_id AS hotel_id,
+      a.hotel_name AS hotel_name ,
+      a.room_price AS minPrice,
+      pir.pirture_path AS hotel_pirture
+      FROM tb_pirture pir,
+        (SELECT  h.hotel_id AS hotel_id,h.hotel_name AS hotel_name, MIN(p.room_price) room_price
+          FROM tb_hotel AS h, tb_price AS p
+          WHERE h.hotel_id=p.hotel_id
+          GROUP BY h.hotel_id) a
+      WHERE a.hotel_id = pir.hotel_id AND pir.prioritys = 0
+    </select>
+
+
+</mapper>

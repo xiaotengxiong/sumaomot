@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:命名空间，对应dao接口 -->
+<mapper namespace="com.smmot.suamo.dao.RoomDao">
+
+    <!--查询全部房间信息-->
+    <select id="queryAll" resultType="com.smmot.suamo.entity.Room">
+        SELECT room_id,hotel_id,room_type_id,room_number,room_status,floors,room_area,room_describe,create_title,
+        delstatus,create_time,update_time
+        FROM tb_room
+        WHERE 1=1
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+        <if test="roomNumber!=null">AND room_number=#{roomNumber}</if>
+        <if test="roomStatus!=null">AND room_status=#{roomStatus}</if>
+        <if test="floors!=null">AND floors=#{floors}</if>
+        <if test="roomArea!=null">AND room_area=#{roomArea}</if>
+        <if test="roomDescribe!=null">AND room_describe=#{roomDescribe}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+        <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+        ORDER BY delstatus
+--         DESC
+    </select>
+
+    <!--根据信息查询房间信息-->
+    <select id="selectOne" resultType="com.smmot.suamo.entity.Room" parameterType="com.smmot.suamo.entity.Room">
+        SELECT r.*,h.hotel_name hotelName,rt.type_name typeName
+        FROM tb_room AS r
+        LEFT  JOIN tb_hotel AS h  ON r.room_id=h.hotel_id
+        LEFT  JOIN tb_roomtype AS rt ON r.room_id=rt.room_type_id
+        WHERE 1=1
+        <if test="roomId!=null">AND room_id=#{roomId}</if>
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+        <if test="roomNumber!=null">AND room_number=#{roomNumber}</if>
+        <if test="roomStatus!=null">AND room_status=#{roomStatus}</if>
+        <if test="floors!=null">AND floors=#{floors}</if>
+        <if test="roomArea!=null">AND room_area=#{roomArea}</if>
+        <if test="roomDescribe!=null">AND room_describe=#{roomDescribe}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+        <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+    </select>
+
+    <!--添加房间信息-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="roomId" keyColumn="room_id"
+            parameterType="com.smmot.suamo.entity.Room">
+        INSERT INTO
+        tb_room(hotel_id,room_type_id,room_number,room_status,floors,room_area,room_describe,create_title)
+        VALUES
+        (#{hotelId},#{roomTypeId},#{roomNumber},#{roomStatus},#{floors},
+        #{roomArea},#{roomDescribe},#{createTitle})
+    </insert>
+
+    <!--修改房间信息-->
+    <update id="update" parameterType="com.smmot.suamo.entity.Room">
+      UPDATE  tb_room
+        <set>
+            <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+            <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+            <if test="roomNumber!=null">AND room_number=#{roomNumber}</if>
+            <if test="roomStatus!=null">AND room_status=#{roomStatus}</if>
+            <if test="floors!=null">AND floors=#{floors}</if>
+            <if test="roomArea!=null">AND room_area=#{roomArea}</if>
+            <if test="roomDescribe!=null">AND room_describe=#{roomDescribe}</if>
+            <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+            <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+        </set>
+          WHERE room_id=#{roomId}
+    </update>
+
+    <!--逻辑删除，将状态【delstatus】设置为2-->
+    <update id="delete" parameterType="com.smmot.suamo.entity.Room">
+        UPDATE  tb_room
+        <set>
+            <if test="delstatus!=null and delstatus!=''">delstatus='2'</if>
+        </set>
+        WHERE 1=1
+        <if test="hotelId!=null">AND hotel_id=#{hotelId}</if>
+        <if test="roomTypeId!=null">AND room_type_id=#{roomTypeId}</if>
+        <if test="roomNumber!=null">AND room_number=#{roomNumber}</if>
+        <if test="roomStatus!=null">AND room_status=#{roomStatus}</if>
+        <if test="floors!=null">AND floors=#{floors}</if>
+        <if test="roomArea!=null">AND room_area=#{roomArea}</if>
+        <if test="roomDescribe!=null">AND room_describe=#{roomDescribe}</if>
+        <if test="createTitle!=null">AND create_title=#{createTitle}</if>
+    </update>
+</mapper>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace:命名空间，对应dao接口 -->
+<mapper namespace="com.smmot.suamo.dao.UserDao">
+
+
+    <!--添加用户信息-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="userId"
+            keyColumn="user_id" parameterType="com.smmot.suamo.entity.User">
+        INSERT INTO
+        tb_hotel (user_name,password,user_type,user_compellation,phone,union_id,user_info)
+        VALUES
+        (#{userName},#{password},#{userType},#{userCompellation},#{phone},#{unionId},#{userInfo})
+    </insert>
+
+
+    <!--逻辑删除，将状态【delstatus】设置为2-->
+    <update id="logicalDeletion">
+        UPDATE  tb_hotel
+        <set>
+            delstatus=2
+        </set>
+        WHERE  1=1
+        <if test="userId!=null">AND user_id=#{userId}</if>
+        <if test="userName!=null">AND user_name=#{userName}</if>
+        <if test="password!=null">AND password=#{password}</if>
+        <if test="userType!=null">AND user_type=#{userType}</if>
+        <if test="phone!=null">AND phone=#{phone}</if>
+        <if test="unionId!=null">AND union_id=#{unionId}</if>
+        <if test="userInfo!=null">AND user_info=#{userInfo}</if>
+    </update>
+
+    <!--修改用户信息-->
+    <update id="update" parameterType="com.smmot.suamo.entity.User">
+        UPDATE  tb_hotel
+        <set>
+            <if test="userName!=null">AND user_name=#{userName}</if>
+            <if test="password!=null">AND password=#{password}</if>
+            <if test="userType!=null">AND user_type=#{userType}</if>
+            <if test="phone!=null">AND phone=#{phone}</if>
+            <if test="unionId!=null">AND union_id=#{unionId}</if>
+            <if test="userInfo!=null">AND user_info=#{userInfo}</if>
+            <if test="delstatus!=null">delstatus=#{delstatus}</if>
+        </set>
+        WHERE user_id=#{userId}
+    </update>
+
+
+
+    <!--查询全部用户信息-->
+    <select id="selectList" resultType="com.smmot.suamo.entity.User">
+        SELECT user_id,user_name,password,user_type,user_compellation,phone,union_id,user_info,last_time,delstatus,create_time
+        FROM tb_user
+        WHERE 1=1
+        <if test="userId!=null">AND user_id=#{userId}</if>
+        <if test="userName!=null">AND user_name=#{userName}</if>
+        <if test="password!=null">AND password=#{password}</if>
+        <if test="userType!=null">AND user_type=#{userType}</if>
+        <if test="userCompellation!=null">AND user_compellation=#{compellation}</if>
+        <if test="phone!=null">AND phone=#{phone}</if>
+        <if test="unionId!=null">AND union_id=#{unionId}</if>
+        <if test="userInfo!=null">AND user_info=#{userInfo}</if>
+        <if test="lastTime!=null">AND last_time=#{lastTime}</if>
+        <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+        <if test="createTime!=null">AND create_time=#{createTime}</if>
+        -- ORDER BY delstatus
+        --         DESC
+    </select>
+
+    <!--根据信息查询用户-->
+    <select id="selectOne" resultType="com.smmot.suamo.entity.User">
+        SELECT user_id,user_name,password,user_type,user_compellation,phone,union_id,user_info,last_time,delstatus,create_time
+        FROM tb_user
+        WHERE 1=1
+        <if test="userId!=null">AND user_id=#{userId}</if>
+        <if test="userName!=null">AND user_name=#{userName}</if>
+        <if test="password!=null">AND password=#{password}</if>
+        <if test="userType!=null">AND user_type=#{userType}</if>
+        <if test="userCompellation!=null">AND user_compellation=#{userCompellation}</if>
+        <if test="phone!=null">AND phone=#{phone}</if>
+        <if test="unionId!=null">AND union_id=#{unionId}</if>
+        <if test="userInfo!=null">AND user_info=#{userInfo}</if>
+        <if test="lastTime!=null">AND last_time=#{lastTime}</if>
+        <if test="delstatus!=null">AND delstatus=#{delstatus}</if>
+        <if test="createTime!=null">AND create_time=#{createTime}</if>
+    </select>
+
+
+
+</mapper>
